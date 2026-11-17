@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reporte Semanal de Correos</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f4f6f9;
+      color: #202124;
+      margin: 0;
+      padding: 24px 12px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e0e4e8;
+    }
+    .header {
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      color: #ffffff;
+      padding: 28px 24px;
+      text-align: left;
+    }
+    .header h1 {
+      margin: 0 0 6px 0;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .header p {
+      margin: 0;
+      font-size: 13px;
+      opacity: 0.88;
+    }
+    .content {
+      padding: 24px;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a202c;
+      border-bottom: 2px solid #edf2f7;
+      padding-bottom: 8px;
+      margin-top: 24px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title:first-of-type {
+      margin-top: 0;
+    }
+    .overview-card {
+      background-color: #f8fafc;
+      border-left: 4px solid #1a73e8;
+      padding: 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #334155;
+      white-space: pre-line;
+    }
+    .todo-item {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 12px;
+      transition: all 0.2s ease;
+    }
+    .todo-high {
+      border-left: 4px solid #ef4444;
+      background: #fffafa;
+    }
+    .todo-medium {
+      border-left: 4px solid #f59e0b;
+      background: #fffdfa;
+    }
+    .todo-low {
+      border-left: 4px solid #10b981;
+      background: #fbfdfc;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .badge-high { background-color: #fee2e2; color: #b91c1c; }
+    .badge-medium { background-color: #fef3c7; color: #b45309; }
+    .badge-low { background-color: #d1fae5; color: #047857; }
+
+    .todo-task {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+    .todo-context {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+    .link-action {
+      font-size: 12px;
+      color: #1a73e8;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .link-action:hover {
+      text-decoration: underline;
+    }
+    .event-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #8b5cf6;
+      border-radius: 8px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .event-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+    .event-meta {
+      font-size: 13px;
+      color: #475569;
+      margin-bottom: 6px;
+    }
+    .event-btn {
+      display: inline-block;
+      background-color: #8b5cf6;
+      color: #ffffff !important;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      margin-top: 8px;
+      margin-right: 8px;
+    }
+    .footer {
+      background-color: #f8fafc;
+      border-top: 1px solid #e2e8f0;
+      padding: 18px 24px;
+      font-size: 12px;
+      color: #94a3b8;
+      text-align: center;
+    }
+    .empty-state {
+      font-size: 13px;
+      color: #64748b;
+      font-style: italic;
+      padding: 8px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📊 Reporte Semanal & To-Do List</h1>
+      <p>Generado automáticamente los viernes al mediodía (12:00 PM - Hora Colombia) • {{ date_str }}</p>
+    </div>
+
+    <div class="content">
+      <!-- Resumen Ejecutivo -->
+      <div class="section-title">📌 Resumen Ejecutivo de la Semana</div>
+      <div class="overview-card">
+        {{ summary_overview }}
+      </div>
+
+      <!-- To-Do List -->
+      <div class="section-title">
+        <span>✅ To-Do List Priorizada</span>
+        <span style="font-size: 12px; font-weight: normal; color: #64748b; margin-left: auto;">{{ todo_list|length }} tareas</span>
+      </div>
+
+      {% if todo_list %}
+        {% for item in todo_list %}
+          {% set p = item.priority|upper %}
+          <div class="todo-item {% if p == 'HIGH' %}todo-high{% elif p == 'MEDIUM' %}todo-medium{% else %}todo-low{% endif %}">
+            <span class="badge {% if p == 'HIGH' %}badge-high{% elif p == 'MEDIUM' %}badge-medium{% else %}badge-low{% endif %}">
+              {% if p == 'HIGH' %}🔴 Alta Prioridad{% elif p == 'MEDIUM' %}🟡 Media Prioridad{% else %}🟢 Baja Prioridad{% endif %}
+            </span>
+            <div class="todo-task">{{ item.task }}</div>
+            <div class="todo-context">
+              <strong>Origen:</strong> {{ item.context }} 
+              {% if item.deadline and item.deadline != 'Sin fecha' %}
+                • <strong>Plazo:</strong> {{ item.deadline }}
+              {% endif %}
+            </div>
+            {% if item.email_link %}
+              <a href="{{ item.email_link }}" target="_blank" class="link-action">Abrir correo original ↗</a>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">No hay tareas pendientes detectadas en los correos recientes.</div>
+      {% endif %}
+
+      <!-- Eventos para Google Calendar -->
+      <div class="section-title">
+        <span>📅 Eventos & Fechas Límite Sugeridas</span>
+        <span style="font-size: 12px; font-weight: normal; color: #64748b; margin-left: auto;">{{ calendar_events|length }} detectados</span>
+      </div>
+
+      {% if calendar_events %}
+        {% for evt in calendar_events %}
+          <div class="event-card">
+            <div class="event-title">{{ evt.title }}</div>
+            <div class="event-meta">
+              <strong>⏰ Cuándo:</strong> {{ evt.date }} a las {{ evt.time }} ({{ evt.duration_minutes }} min)
+              {% if evt.location %}
+                <br><strong>📍 Ubicación:</strong> {{ evt.location }}
+              {% endif %}
+              {% if evt.description %}
+                <br><strong>📝 Detalles:</strong> {{ evt.description }}
+              {% endif %}
+            </div>
+            <div>
+              <a href="{{ evt.calendar_url }}" target="_blank" class="event-btn">
+                ➕ Añadir a Google Calendar
+              </a>
+              {% if evt.email_link %}
+                <a href="{{ evt.email_link }}" target="_blank" class="link-action" style="vertical-align: middle;">Ver correo ↗</a>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">No se detectaron nuevas reuniones o fechas límite para el calendario.</div>
+      {% endif %}
+    </div>
+
+    <div class="footer">
+      <p>Agente de IA Personal • Juan Álvarez • Zona Horaria: America/Bogota (UTC-5)</p>
+      <p>Para confirmar eventos desde la terminal: <code>python agent.py list-events</code> y <code>python agent.py confirm &lt;id&gt;</code></p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+# ─── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ─── Virtual environment ──────────────────────────────────────────────────────
+venv/
+.venv/
+env/
+.env_dir/
+
+# ─── Secrets & credentials — NEVER commit these ───────────────────────────────
+.env
+.env.local
+.env.*.local
+# Google OAuth2 Desktop client secret
+credentials.json
+# OAuth2 access/refresh token (auto-generated on first auth)
+token.json
+*.pem
+*.key
+*.p12
+*.pfx
+service_account*.json
+*secret*.json
+
+# ─── Runtime / generated data ────────────────────────────────────────────────
+# Auto-generated list of calendar events awaiting confirmation
+pending_events.json
+*.log
+
+# ─── AI-assisted development tools ────────────────────────────────────────────
+.aider*
+
+# ─── OS / editor artifacts ────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ─── Miscellaneous personal folders ──────────────────────────────────────────
+alexa/
+assistent-all-permises/
